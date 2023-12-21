@@ -1,0 +1,128 @@
+mql
+//+------------------------------------------------------------------+
+//|                                                Market Reversal Alerts MT5|
+//|                             Copyright 2022, Forex Robot Easy Team|
+//|                                              https://forexroboteasy.com|
+//+------------------------------------------------------------------+
+
+#property copyright 'Copyright 2022, Forex Robot Easy Team'
+#property link      'https://forexroboteasy.com'
+#property version   '1.00'
+
+//+------------------------------------------------------------------+
+//| Global variables                                                 |
+//+------------------------------------------------------------------+
+bool alertTriggered = false; // Flag to indicate if an alert has been triggered
+
+//+------------------------------------------------------------------+
+//| Custom indicator initialization function                         |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+    IndicatorBuffers(2); // Allocate indicator buffers
+    SetIndexBuffer(0, false); // Do not draw the indicator line
+    SetIndexBuffer(1, false); // Do not draw the indicator line
+    return(INIT_SUCCEEDED);
+}
+
+//+------------------------------------------------------------------+
+//| Custom indicator deinitialization function                       |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+{
+    // Clean up resources if necessary
+}
+
+//+------------------------------------------------------------------+
+//| Custom indicator calculation function                            |
+//+------------------------------------------------------------------+
+int OnCalculate(const int rates_total,
+                const int prev_calculated,
+                const datetime &time[],
+                const double &open[],
+                const double &high[],
+                const double &low[],
+                const double &close[],
+                const long &tick_volume[],
+                const long &volume[],
+                const int &spread[])
+{
+    // Calculate short-term market structure
+    // ...
+    
+    // Check for potential reversal points
+    if (IsReversalPoint())
+    {
+        // Draw alert rectangle
+        DrawAlertRectangle();
+        
+        // Trigger alert
+        if (!alertTriggered)
+        {
+            Alert('Potential market structure shift detected!');
+            alertTriggered = true;
+        }
+    }
+    
+    // Trail the alert rectangles
+    if (alertTriggered)
+    {
+        TrailAlertRectangles();
+    }
+    
+    // Perform other trading functions
+    // ...
+    
+    return(rates_total);
+}
+
+//+------------------------------------------------------------------+
+//| Check if the current point is a potential reversal point          |
+//+------------------------------------------------------------------+
+bool IsReversalPoint()
+{
+    // Logic to determine if the current point is a potential reversal point
+    // ...
+    
+    return false; // Replace with actual condition
+}
+
+//+------------------------------------------------------------------+
+//| Draw an alert rectangle at the potential reversal point           |
+//+------------------------------------------------------------------+
+void DrawAlertRectangle()
+{
+    // Logic to draw an alert rectangle
+    // ...
+}
+
+//+------------------------------------------------------------------+
+//| Trail the alert rectangles behind price                           |
+//+------------------------------------------------------------------+
+void TrailAlertRectangles()
+{
+    // Logic to trail the alert rectangles
+    // ...
+}
+
+//+------------------------------------------------------------------+
+//| Main program start function                                       |
+//+------------------------------------------------------------------+
+void OnStart()
+{
+    // Start the custom indicator
+    IndicatorShortName('Market Reversal Alerts MT5');
+    IndicatorDigits(Digits);
+    SetIndexStyle(0, DRAW_NONE);
+    SetIndexStyle(1, DRAW_NONE);
+    SetIndexLabel(0, NULL);
+    SetIndexLabel(1, NULL);
+    IndicatorSetDouble(INDICATOR_DIGITS, Digits);
+    IndicatorSetInteger(INDICATOR_WIDTH1, 1);
+    IndicatorSetInteger(INDICATOR_WIDTH2, 1);
+    
+    // Run the indicator calculation
+    int counted_bars = IndicatorCounted();
+    int limit = Bars - counted_bars;
+    OnCalculate(Bars, limit, Time, Open, High, Low, Close, TickVolume, Volume, Spread);
+}
